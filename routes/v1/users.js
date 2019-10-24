@@ -116,36 +116,80 @@ userRouter.route('/create').post((req,res) => {
                             console.log(err_)
                         }else{
 
+                          // Success JSEND message template. 
+                            let success_message = {
+                                status : "success",
+                                data : "",
+                            }; 
+
+
                             // Create a new JWT token. 
                             let newToken = createJWT({
-                                email_address : req.body.email_address,
-                                first_name : req.body.first_name,
-                                id : saved._id
-                            })
+                                id : saved._id,
+                                name : saved.name,
+                                email_address : saved.email_address,
+                                role : saved.role
+                            });
 
-                            console.log(newToken)
-                            console.log('SAVED', saved)
+                          // Data block to send back
+                            let returning_DATA = {
+                                email_address : saved.email_address,
+                                jwt : newToken
+                            }
+
+                            // Add data to JSEND template 
+                            success_message["data"] = returning_DATA
+
+
+                            res.status(200).send(success_message)
                         }
                     })
 
                     
                 }else{
-                    console.log('USER EXISTS')
+                    
+                    // Error message using JSEND template. 
+                    let error_message = {
+                        status : "error",
+                        data : {
+                            message : 'User Already Exists.'
+                        }
+                    }; 
+
+                    res.status(400).send(error_message)
                 }
             })
 
            
         }else{
 
-            console.log('NOT VALID ACADEMIC')
+            // Error message using JSEND template. 
+            let error_message = {
+                status : "error",
+                data : {
+                    message : 'This email is not an academic email.'
+                }
+            }; 
+
+            res.status(400).send(error_message)
         }
 
     }).catch((errr) => {
-        console.log(errr)
+
+        // Error message using JSEND template. 
+        let error_message = {
+            status : "error",
+            data : {
+                message : 'Error sending request.'
+            }
+        }; 
+
+        res.status(400).send(error_message)
+
     })
 
 
-    res.send('CREATED USER')
+ 
 })
 
 
