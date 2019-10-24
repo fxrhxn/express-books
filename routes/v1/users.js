@@ -13,17 +13,64 @@ userRouter.route('/signin').post((req,res) => {
     const required = ['email_address', 'password'];
     if (displayMissingParameters(req, res, required)) return;
 
+    // Find one user. 
     User.findOne({
         email_address : req.body.email_address
     }, (err, userfound) => {
         if(userfound == null){
-            console.log('NOT FOUND')
+            
+            // Error message using JSEND template. 
+            let error_message = {
+                status : "error",
+                data : {
+                    message : 'Could not find a user.'
+                }
+            }; 
+
+                res.status(400).send(error_message)
         }else{
             userfound.comparePassword(req.body.password, (err_, isMatch) => {
                  if(isMatch){
-                    res.send('JWT')
+                    
+                    // Success JSEND message template. 
+                    let success_message = {
+                        status : "success",
+                        data : "",
+                    }; 
+
+                    // Data that gets transformed into a JWT token.
+                    let jwt_data = {
+                        id : userfound._id,
+                        name : userfound.name,
+                        email_address : userfound.email_address,
+                        role : userfound.role
+                    };
+
+                    // Create a jwt token
+                    let jwtCreated = createJWT(jwt_data)
+
+                    // Data block for returning data
+                    let returning_DATA = {
+                        email_address : userfound.email_address,
+                        jwt : jwtCreated
+                    }
+
+                    // Add data to JSEND template 
+                    success_message["data"] = returning_DATA
+
+                    res.status(200).send(success_message)
+
                  }else{
-                     res.send('error')
+
+                    // Error message using JSEND template. 
+                    let error_message = {
+                        status : "error",
+                        data : {
+                            message : 'error sending request.'
+                        }
+                    }; 
+
+                     res.status(400).send(error_message)
                  }
             })
         }
