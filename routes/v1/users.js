@@ -8,7 +8,9 @@ let Verifier = require('academic-email-verifier').Verifier
 let User = require('../../models/User')
 
 
-// POST Request to Sign In 
+/* ROUTE - /users/signin
+POST Request that logs into an account. 
+**********************************************/
 userRouter.route('/signin').post((req,res) => {
     const required = ['email_address', 'password'];
     if (displayMissingParameters(req, res, required)) return;
@@ -80,7 +82,9 @@ userRouter.route('/signin').post((req,res) => {
     
 })
 
-// POST Request that creates a new account.
+/* ROUTE - /users/create
+ POST Request that creates a new account. 
+**********************************************/
 userRouter.route('/create').post((req,res) => {
     const required = ['first_name', 'last_name', 'email_address', 'role', 'password'];
     if (displayMissingParameters(req, res, required)) return;
