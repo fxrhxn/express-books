@@ -27,4 +27,22 @@ You can test the application by typing:
 `npm test` 
 
 
+## Routes
+All the routes and endpoints
 
+### GET /
+Main homepage route showing simple text.
+
+### POST /users/signin
+Sign In and get a JWT token returned.
+Parameters: email_address(string), password(string)
+
+### POST /users/create 
+Create a new user. 
+Parameters: username(String), password(String), first_name(String),last_name(String), role(String),email_address(String)
+
+
+### GET /books
+Gets all the books a user can access via institution.
+Send JWT from the header. 
+Example: "Bearer {JWT TOKEN}"
